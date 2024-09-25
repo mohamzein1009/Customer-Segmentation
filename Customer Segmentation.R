@@ -1,3 +1,6 @@
+library(ggplot2)
+library(tidyverse)
+
 df = read.csv("Mall_Customers.csv")
 
 df$CustomerID = NULL
@@ -7,8 +10,8 @@ df = df %>%
   rename(Income = Annual.Income..k..) %>%
   rename(Score = Spending.Score..1.100.)
 
-head(df)
-
 ggplot(df, mapping = aes()) +
   geom_point(mapping = aes(x = Income, y = Score, colour = Gender, size = Age))
 
+model = lm(Score ~ Income + Age + Gender, data = df)
+summary(model)
