@@ -3,8 +3,11 @@ library(tidyverse)
 library(lme4)
 library(mgcv)
 library(reshape2)
+library(ggpubr)
 
 df = read.csv("Mall_Customers.csv")
+
+# Wrangling ------------
 
 df$CustomerID = NULL
 
@@ -12,6 +15,30 @@ df = df %>%
   mutate(Gender = ifelse(Gender == "Male", 1,0)) %>%
   rename(Income = Annual.Income..k..) %>%
   rename(Score = Spending.Score..1.100.)
+
+# Plots ---------------
+
+p = ggplot(df, aes(x = Score)) +
+  geom_bar(fill = 'orange', colour = "black") +
+  ggtitle("Distribution of Spending score") +
+  labs(x = "Spening score", y = "Count") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+q = ggplot(df, aes(x = Income)) +
+  geom_bar(fill = 'orange', colour = "black") +
+  ggtitle("Distribution of Annual Income") +
+  labs(x = "Income", y = "Count") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+r = ggplot(df, aes(x = Age)) +
+  geom_bar(fill = 'orange', colour = "black") +
+  ggtitle("Distribution of Age") +
+  labs(x = "Age", y = "Count") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(p, q, r, ncol = 2, nrow = 2)
+
+# Exploration -----------------
 
 corr = round(cor(df), 3)
 meltcorr = melt(corr)
@@ -25,6 +52,8 @@ ggplot(df, mapping = aes()) +
 ggplot(df, mapping = aes()) +
   geom_point(mapping = aes(x = Income, y = Score, size = Age)) +
   facet_wrap(~Gender)
+
+# Linear modelling ------------------
 
 model = lm(Score ~ Income + Age + Gender, data = df)
 summary(model)
@@ -41,6 +70,8 @@ summary(model4)
 ggplot(df, mapping = aes()) +
   geom_point(mapping = aes(x = Age, y = Score)) +
   facet_wrap(~Gender)
+
+# K Means ---------------
 
 kout = kmeans(df, 5, iter.max = 30, nstart = 20)
 kout
@@ -67,6 +98,8 @@ df$cluster_id = factor(k5$cluster)
 ggplot(df, aes(y = Score, x = Income, colour = cluster_id, size = Age)) +
   geom_point() +
   facet_wrap(~Gender)
+
+# GAMs -------------------
 
 gam1 = gam(Score ~ s(Income) + s(Age) + Gender, 
            data = df, family = gaussian)
