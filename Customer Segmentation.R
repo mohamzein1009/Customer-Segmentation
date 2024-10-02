@@ -4,6 +4,7 @@ library(lme4)
 library(mgcv)
 library(reshape2)
 library(ggpubr)
+library(scatterplot3d)
 
 df = read.csv("Mall_Customers.csv")
 
@@ -98,6 +99,13 @@ df$cluster_id = factor(k5$cluster)
 ggplot(df, aes(y = Score, x = Income, colour = cluster_id, size = Age)) +
   geom_point() +
   facet_wrap(~Gender)
+
+# 3D scatterplots -----------
+
+colours = c("red", "blue", "black", "yellow", "pink")
+colours = colours[as.numeric(df$cluster_id)]
+
+scatterplot3d(df[c("Score", "Income", "Age")], color = colours, pch = df$Gender + 16)
 
 # GAMs -------------------
 
