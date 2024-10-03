@@ -94,18 +94,27 @@ ggplot(wss.df, aes(x = clusters, y = wss, group = 1)) +
   xlab('Number of clusters')
 
 k5 = kmeans(df, centers = 5, nstart = 20)
-df$cluster_id = factor(k5$cluster)
+df$cluster_id5 = factor(k5$cluster)
 
-ggplot(df, aes(y = Score, x = Income, colour = cluster_id, size = Age)) +
+k6 = kmeans(df, centers = 6, nstart = 20)
+df$cluster_id6 = factor(k6$cluster)
+
+ggplot(df, aes(y = Score, x = Income, colour = cluster_id5, size = Age)) +
+  geom_point() +
+  facet_wrap(~Gender)
+
+ggplot(df, aes(y = Score, x = Income, colour = cluster_id6, size = Age)) +
   geom_point() +
   facet_wrap(~Gender)
 
 # 3D scatterplots -----------
 
-colours = c("red", "blue", "black", "yellow", "pink")
-colours = colours[as.numeric(df$cluster_id)]
+colours = c("red", "blue", "black", "yellow", "pink", "green")
+colours5 = colours[as.numeric(df$cluster_id5)]
+colours6 = colours[as.numeric(df$cluster_id6)]
 
-scatterplot3d(df[c("Score", "Income", "Age")], color = colours, pch = df$Gender + 16)
+scatterplot3d(df[c("Score", "Income", "Age")], color = colours5, pch = df$Gender + 16)
+scatterplot3d(df[c("Score", "Income", "Age")], color = colours6, pch = df$Gender + 16)
 
 # GAMs -------------------
 
