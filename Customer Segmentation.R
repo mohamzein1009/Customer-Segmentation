@@ -5,6 +5,7 @@ library(mgcv)
 library(reshape2)
 library(ggpubr)
 library(scatterplot3d)
+library(PerformanceAnalytics)
 
 df = read.csv("Mall_Customers.csv")
 
@@ -46,6 +47,8 @@ meltcorr = melt(corr)
 
 ggplot(meltcorr, aes(Var1, Var2, fill = value)) +
   geom_tile()
+
+chart.Correlation(df, histogram = TRUE, pch = 19)
 
 ggplot(df, mapping = aes()) +
   geom_point(mapping = aes(x = Income, y = Score, colour = Gender, size = Age))
@@ -106,6 +109,13 @@ ggplot(df, aes(y = Score, x = Income, colour = cluster_id5, size = Age)) +
 ggplot(df, aes(y = Score, x = Income, colour = cluster_id6, size = Age)) +
   geom_point() +
   facet_wrap(~Gender)
+
+# Hierarchical clustering -----------------
+
+clusters = hclust(dist(df))
+plot(clusters)
+
+cuts = cutree(clusters, 5)
 
 # 3D scatterplots -----------
 
